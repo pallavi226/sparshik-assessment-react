@@ -1,0 +1,193 @@
+//app.js
+import React from 'react';
+import Tabs from "./components/Tabs"; 
+import Header from "./Header";
+import Footer from "./Footer";
+import './App.css';
+
+function App() {
+  return (
+<div>
+<header/>
+<h1>Tabs Demo</h1>
+ <Tabs> 
+       <div label="Gator"> 
+         See ya later, <em>Alligator</em>! 
+         <img alt="Florida Dairy Farmers" src="https://raw.githubusercontent.com/solodev/slider-boxes/master/images/img-1.png" class="mx-auto"/>
+       </div> 
+       <div label="Croc"> 
+         After 'while, <em>Crocodile</em>! 
+         <img alt="Florida Dairy Farmers" src="https://raw.githubusercontent.com/solodev/slider-boxes/master/images/img-1.png" class="mx-auto"/>
+       </div> 
+       <div label="Sarcosuchus"> 
+         Nothing to see here, this tab is <em>extinct</em>! 
+         <img alt="Florida Dairy Farmers" src="https://raw.githubusercontent.com/solodev/slider-boxes/master/images/img-1.png" class="mx-auto"/>
+       </div> 
+     </Tabs> 
+     <footer/>
+</div>
+  );
+}
+export default App;
+
+//component/Tab.js
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+class Tab extends Component {
+  static propTypes = {
+    activeTab: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+  };
+
+  onClick = () => {
+    const { label, onClick } = this.props;
+    onClick(label);
+  }
+
+  render() {
+    const {
+      onClick,
+      props: {
+        activeTab,
+        label,
+      },
+    } = this;
+
+    let className = 'tab-list-item';
+
+    if (activeTab === label) {
+      className += ' tab-list-active';
+    }
+
+    return (
+      <li
+        className={className}
+        onClick={onClick}
+      >
+        {label}
+      </li>
+    );
+  }
+}
+
+export default Tab;
+
+//component/Tabs.js
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Tab from "./Tab"; 
+
+class Tabs extends Component {
+  static propTypes = {
+    children: PropTypes.instanceOf(Array).isRequired,
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      activeTab: this.props.children[0].props.label,
+    };
+  }
+
+  onClickTabItem = (tab) => {
+    this.setState({ activeTab: tab });
+  }
+
+
+   render() {
+    const {
+      onClickTabItem,
+      props: {
+        children,
+      },
+      state: {
+        activeTab,
+      }
+    } = this;
+
+    return (
+      <div className="tabs">
+        <ol className="tab-list">
+          {children.map((child) => {
+            const { label } = child.props;
+
+            return (
+              <Tab
+                activeTab={activeTab}
+                key={label}
+                label={label}
+                onClick={onClickTabItem}
+              />
+            );
+          })}
+        </ol>
+        <div className="tab-content">
+          {children.map((child) => {
+            if (child.props.label !== activeTab) return undefined;
+            return child.props.children;
+          })}
+        </div>
+      </div>
+    );
+  }
+}
+export default Tabs;
+
+//Header.js
+
+import React from 'react';
+function Header() {
+	return(
+		<header>
+		<div className = "header">
+		<h1>this is header</h1>
+		</div>
+		</header>
+	)
+}
+export default Header
+
+//Footer.js
+
+import React from 'react';
+function Footer() {
+	return(
+		<footer>
+		<div className = "footer">
+		<h1>this is footer</h1>
+		</div>
+		</footer>
+	)
+}
+export default Footer
+
+//App.css
+
+.tab-list {  border-bottom: 1px solid #ccc;
+  padding-left: 0;
+}
+
+.tab-list-item {
+  display: inline-block;
+  list-style: none;
+  margin-bottom: -1px;
+  padding: 0.5rem 0.75rem;
+}
+
+.tab-list-active {
+  background-color: white;
+  border: solid #ccc;
+  border-width: 1px 1px 0 1px;
+}
+.header{
+background-color: green;
+}
+.footer{
+background-color: yellow;
+}
+
+
